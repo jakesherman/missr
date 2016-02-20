@@ -13,12 +13,12 @@ na_ <- function(.data, ..., .dots) {
 #' Gives summary information on NA values
 #' 
 #' Given an object, prints out a summary table describing the number and 
-#' percent NAs, both overall and by column (for data.frames, matricies) or 
-#' element (for lists).
+#' percent of missing data (NAs), both overall and by column (for data.frames, 
+#' matricies) or element (for lists).
 #' 
 #' @section Special functions:
 #' As well as using existing functions like \code{:} and \code{c}, there are
-#' a number of special functions that only work inside \code{select}
+#' a number of special functions that work inside \code{na}
 #'
 #' \itemize{
 #'  \item \code{starts_with(x, ignore.case = TRUE)}:
@@ -108,7 +108,7 @@ na_.data.frame <- function(.data, ..., .dots) {
 
 #' @export
 na_.matrix <- function(.data, ..., .dots) {
-    na_.data.frame(.data, ..., .dots)
+    na_.data.frame(as.data.frame(.data, stringsAsFactors = FALSE), ..., .dots)
 }
 
 #' @export
@@ -136,6 +136,7 @@ na_.list <- function(.data, ..., .dots) {
     non_NAs <- lengths - all_NAs
     percent_NAs <- unlist(Map(as_percent, all_NAs, lengths))
     vars <- names(.data)
+    vars[vars == ""] <- "<no-name>"
     classes <- vapply(.data, class, character(1))
     num_ele <- length(vars)
     total_percent_NA <- as_percent(sum(all_NAs), sum(lengths))
@@ -149,8 +150,8 @@ na_.list <- function(.data, ..., .dots) {
     
     # Output the results
     cat("Source: local list [", 
-        paste0("Lengths of ", range(lengths)[1], " to ", range(lengths)[2], 
-               " x ", num_ele, " elements"), "]\n")
+        paste(num_ele, "elements, lengths from", range(lengths)[1], "to",
+              range(lengths)[2]), "]\n")
     cat(total_percent_NA, "of all elements of elements are NAs.\n")
     pander::pander(NA_table)
 }
@@ -181,7 +182,12 @@ na_.character <- function(.data, ..., .dots) {
 }
 
 #' @export
-na_.numeric <- function(.data, ..., .dots) {
+na_.double <- function(.data, ..., .dots) {
+    na_.default(.data, ..., .dots)
+}
+
+#' @export
+na_.integer <- function(.data, ..., .dots) {
     na_.default(.data, ..., .dots)
 }
 

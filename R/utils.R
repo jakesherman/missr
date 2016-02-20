@@ -1,6 +1,7 @@
 ## ============================================================================
 ##
 ## Utilities - common functions, reexported functions, etc.
+## Depends: magrittr
 ##
 ## ============================================================================
 
@@ -29,22 +30,51 @@ create_random_na_vector <- function(vector, num_NAs) {
 }
 
 create_random_na <- function(data, prop_na_range = c(.25, .75), 
-                             ignore_cols = NULL) {
+                             ignore_cols = NULL, seed = NULL) {
     
     # Given a dataframe [data], create a random number of NA values in each 
     # column not in [ignore_cols] with proportions ranging from the beginning
     # value of [prop_na_range] to the last value of it
+    if (!is.null(seed)) {
+        set.seed(seed)
+    }
     data <- data
     cols <- names(data)
     if (!is.null(ignore_cols)) 
         cols <- cols[!cols %in% ignore_cols]
     col_props <- round(
-        runif(length(cols), prop_na_range[1], prop_na_range[2]) * nrow(data), 1)
+        runif(length(cols), prop_na_range[1], 
+              prop_na_range[2]) * nrow(data), 1)
     for (i in seq_along(cols)) {
         data[[cols[i]]] <- create_random_na_vector(
             data[[cols[i]]], col_props[i])
     }
     
     data
+}
+
+identify_type <- function(vector) {
+    
+    # Given a vector, identifies what the type if. Generally it agrees with
+    # the \code{typeof} fuction, except for factors.
+    type <- typeof(vector)
+    if (type == "integer") {
+        vec_class <- class(vector)
+        if (vec_class == "factor") {
+            type <- vec_class
+        }
+    }
+    
+    type
+}
+
+# Names of all installed packages
+installed_packages <- function() {
+    unname(utils::installed.packages()[, 1])
+}
+
+# Returns TRUE if a package is installed, FALSE otherwise
+is_package_installed <- function(package_name) {
+    package_name %in% installed_packages()
 }
 
