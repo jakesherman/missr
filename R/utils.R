@@ -68,13 +68,14 @@ identify_type <- function(vector) {
     type
 }
 
-# Names of all installed packages
 installed_packages <- function() {
+    
+    # Names of all installed packages
     unname(utils::installed.packages()[, 1])
 }
 
-# Returns TRUE if a package is installed, FALSE otherwise
 is_package_installed <- function(package_name) {
+    
+    # Returns TRUE if a package is installed
     package_name %in% installed_packages()
 }
-
