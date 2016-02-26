@@ -2,9 +2,9 @@ Package: missr
 Title: Explore, fill in, or create missing values (NAs).
 Version: 0.0.0.9000
 Authors@R: person("Jake", "Sherman", email = "jake@jakesherman.com", 
-role = c("aut", "cre"))
+        role = c("aut", "cre"))
 Description: THe missr package allows you to explore missing values in a data 
-set, fill in missing values, or create new missing values.
+        set, fill in missing values, or create new missing values.
 Depends: R (>= 3.0.0)
 Imports: dplyr,
         lazyeval,

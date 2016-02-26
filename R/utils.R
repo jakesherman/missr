@@ -1,19 +1,8 @@
 ## ============================================================================
 ##
-## Utilities - common functions, reexported functions, etc.
-## Depends: magrittr
+## Utilities
 ##
 ## ============================================================================
-
-#' Pipe operator
-#'
-#' @name %>%
-#' @rdname pipe
-#' @keywords internal
-#' @export
-#' @importFrom magrittr %>%
-#' @usage lhs \%>\% rhs
-NULL
 
 as_percent <- function(num, total, dig = 1) {
     
@@ -53,6 +42,16 @@ create_random_na <- function(data, prop_na_range = c(.25, .75),
     data
 }
 
+#' Identifies the type of a vector
+#' 
+#' \code{identify_type} identifies what type a vector is. Generally it agrees
+#' with \code{typeof}, except in the case of factors.
+#' @param vector - a vector to identify the type of
+#' @export
+#' @examples
+#' 
+#' identify_type(mtcars$mpg)
+#' sapply(iris, identify_type)
 identify_type <- function(vector) {
     
     # Given a vector, identifies what the type if. Generally it agrees with
@@ -79,3 +78,50 @@ is_package_installed <- function(package_name) {
     # Returns TRUE if a package is installed
     package_name %in% installed_packages()
 }
+
+make_function <- function(args, body, env = parent.frame()) {
+    
+    # purrr:::make_function
+    # https://github.com/hadley/purrr/R/partial.R
+    args <- as.pairlist(args)
+    stopifnot(is.call(body) || is.name(body) || is.atomic(body))
+    env <- as.environment(env)
+    eval(call("function", args, body), env)
+}
+
+#' Convert an object into a function.
+#'
+#' \code{as_function} is the powerhouse behind the varied function
+#' specifications that purrr functions allow. This is a a non-exported,
+#' modified version that does not turn character vectors into functions, 
+#' instead it simply returns objects that are not functions or formulas as-is.
+#'
+#' @param .f A function, formula, or atomic vector.
+#'
+#'   If a \strong{function}, it is used as is.
+#'
+#'   If a \strong{formula}, e.g. \code{~ .x + 2}, it is converted to a
+#'   function with two arguments, \code{.x} or \code{.} and \code{.y}. This
+#'   allows you to create very compact anonymous functions with up to
+#'   two inputs.
+#'
+#'   If anything else, return it as-is.
+as_function <- function(.f) {
+    
+    # purrr:::as_function, w/ modifications
+    # https://github.com/hadley/purrr/R/utils.R
+    UseMethod("as_function")
+}
+
+as_function.function <- function(.f) .f
+
+as_function.formula <- function(.f) {
+    .x <- NULL # hush R CMD check NOTE
+    
+    if (length(.f) != 2) {
+        stop("Formula must be one sided", call. = FALSE)
+    }
+    make_function(alist(.x = , .y = , . = .x), .f[[2]], environment(.f))
+}
+
+as_function.default <- function(.f) .f

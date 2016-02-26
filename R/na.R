@@ -5,6 +5,7 @@
 ##
 ## ============================================================================
 
+#' @describeIn na
 #' @export
 na_ <- function(.data, ..., .dots) {
     UseMethod("na_")
@@ -15,37 +16,14 @@ na_ <- function(.data, ..., .dots) {
 #' Given an object, prints out a summary table describing the number and 
 #' percent of missing data (NAs), both overall and by column (for data.frames, 
 #' matricies) or element (for lists).
-#' 
-#' @section Special functions:
-#' As well as using existing functions like \code{:} and \code{c}, there are
-#' a number of special functions that work inside \code{na}
 #'
-#' \itemize{
-#'  \item \code{starts_with(x, ignore.case = TRUE)}:
-#'    names starts with \code{x}
-#'  \item \code{ends_with(x, ignore.case = TRUE)}:
-#'    names ends in \code{x}
-#'  \item \code{contains(x, ignore.case = TRUE)}:
-#'    selects all variables whose name contains \code{x}
-#'  \item \code{matches(x, ignore.case = TRUE)}:
-#'    selects all variables whose name matches the regular expression \code{x}
-#'  \item \code{num_range("x", 1:5, width = 2)}:
-#'    selects all variables (numerically) from x01 to x05.
-#'  \item \code{one_of("x", "y", "z")}:
-#'    selects variables provided in a character vector.
-#'  \item \code{everything()}:
-#'    selects all variables.
-#' }
-#'
-#' To drop variables, use \code{-}. 
-#'
-#' @param .data a data.frame, matrix, list, or vector
-#' @param ...  Comma separated list of unquoted expressions. You can treat
-#' variable names like they are positions. Use positive values to select
-#' variables; use negative values to drop variables. Note: this is the same
-#' behavior as \code{dplyr::select}, in fact the \code{dplyr::select_vars}
-#' function is used here to implement this functionality.
-#' @oaram .dots Use \code{na_()} to do standard evaluation.
+#' @param .data a data.frame, data.table, matrix, list, or vector
+#' @param ... Specification of columns to fill, leaving blank will select all
+#' columns. Use bare variable names. Select all variables between x and z with 
+#' x:z, exclude y with -y. For more options, see the \code{dplyr::select} 
+#' documentation. For lists, elements are treated as columns.
+#' @param .dots Use \code{na_()} to do standard evaluation. See dplyr's NSE
+#' vignette for more information with \code{vignette("nse", "dplyr")}.
 #' @return a table detailing the NAs in an object
 #' @export
 #' @examples 
@@ -61,11 +39,11 @@ na_ <- function(.data, ..., .dots) {
 #' 
 #' and Lists:
 #' na(as.list(mtcars))
-
 na <- function(.data, ...) {
     na_(.data, .dots = lazyeval::lazy_dots(...))
 }
 
+#' @describeIn na
 #' @export
 na_.data.frame <- function(.data, ..., .dots) {
     
@@ -106,11 +84,13 @@ na_.data.frame <- function(.data, ..., .dots) {
     pander::pander(NA_table)
 }
 
+#' @describeIn na
 #' @export
 na_.matrix <- function(.data, ..., .dots) {
     na_.data.frame(as.data.frame(.data, stringsAsFactors = FALSE), ..., .dots)
 }
 
+#' @describeIn na
 #' @export
 na_.list <- function(.data, ..., .dots) {
     
@@ -156,6 +136,7 @@ na_.list <- function(.data, ..., .dots) {
     pander::pander(NA_table)
 }
 
+#' @describeIn na
 #' @export
 na_.default <- function(.data, ..., .dots) {
     
@@ -176,26 +157,31 @@ na_.default <- function(.data, ..., .dots) {
     pander::pander(NA_table)
 }
 
+#' @describeIn na
 #' @export
 na_.character <- function(.data, ..., .dots) {
     na_.default(.data, ..., .dots)
 }
 
+#' @describeIn na
 #' @export
 na_.double <- function(.data, ..., .dots) {
     na_.default(.data, ..., .dots)
 }
 
+#' @describeIn na
 #' @export
 na_.integer <- function(.data, ..., .dots) {
     na_.default(.data, ..., .dots)
 }
 
+#' @describeIn na
 #' @export
 na_.factor <- function(.data, ..., .dots) {
     na_.default(.data, ..., .dots)
 }
 
+#' @describeIn na
 #' @export
 na_.logical <- function(.data, ..., .dots) {
     na_.default(.data, ..., .dots)

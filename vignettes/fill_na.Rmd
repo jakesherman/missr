@@ -1,0 +1,19 @@
+---
+title: "fill_na"
+author: "Jake Sherman"
+output: html_document
+---
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+source("../R/utils.R")
+source("../R/fill_na.R")
+```
+
+The `fill_na` function is used to fill in, or replace, NAs with values. `fill_na` 
+works on the most common data structures in R: data.frames, matricies, lists, vectors, and data.tables. Let's start by going over how `fill_na` works on data.frames, the most common use case.
+
+## Data.frames
+
+`fill_na` is designed to work with the magrittr pipe `%>%`, so the first argument, `.data`, is always the object that you want to fill in NAs for. The second argument, `.fill`, may be one of three things:
+
+1. A value to fill in NAs with. Only columns in the data.frame of the same type as that value (identified via the `identify_type` function) 

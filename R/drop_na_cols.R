@@ -6,7 +6,7 @@
 ##
 ## ============================================================================
 
-drop_na_cols_ <- function(.data, tolerance = 0, ..., .dots) {
+drop_na_cols_ <- function(.data, tolerance, ..., .dots) {
     UseMethod("drop_na_cols_")
 }
 
@@ -24,7 +24,6 @@ drop_na_cols_ <- function(.data, tolerance = 0, ..., .dots) {
 #' @examples
 #' 
 #' drop_na_cols(mtcars)
-
 drop_na_cols <- function(.data, tolerance = 0, ...) {
     drop_na_cols_(.data, tolerance, .dots = lazyeval::lazy_dots(...))
 }
