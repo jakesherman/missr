@@ -67,6 +67,23 @@ identify_type <- function(vector) {
     type
 }
 
+cols_of_type <- function(.data, .type) {
+    
+    # Returns the names of columns of .data that are of type .type
+    names(.data)[vapply(.data, identify_type, character(1)) == .type]
+}
+
+cols_of_types <- function(.data, .types) {
+    
+    # Plural of cols_of_type
+    cols <- c()
+    for (.type in .types) {
+        cols <- append(cols, cols_of_type(.data, .type))
+    }
+    
+    unique(cols)
+}
+
 installed_packages <- function() {
     
     # Names of all installed packages
@@ -108,7 +125,7 @@ make_function <- function(args, body, env = parent.frame()) {
 #'   If anything else, return it as-is.
 as_function <- function(.f) {
     
-    # purrr:::as_function, w/ modifications
+    # purrr::as_function, w/ modifications
     # https://github.com/hadley/purrr/R/utils.R
     UseMethod("as_function")
 }
@@ -125,3 +142,17 @@ as_function.formula <- function(.f) {
 }
 
 as_function.default <- function(.f) .f
+
+delete_row <- function(df, row) {
+    
+    # Deletes row [row] from data.frame [df]
+    stopifnot(row > 0 & row <= nrow(df))
+    if (row == 1) {
+        return(dplyr::slice(df, 2:nrow(df)))
+    } else if (row == nrow(df)) {
+        return(dplyr::slice(df, 1:(nrow(df) - 1)))
+    } else {
+        return(rbind(dplyr::slice(df, 1:(row - 1)), 
+              dplyr::slice(df, (row + 1):nrow(df))))
+    }
+}

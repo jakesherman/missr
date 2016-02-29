@@ -12,6 +12,7 @@ Imports: dplyr,
         pander,
         utils
 Suggests: data.table,
-        purrr
+        purrr,
+    testthat
 License: MIT License + file
 LazyData: true

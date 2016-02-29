@@ -18,7 +18,7 @@ drop_na_cols_ <- function(.data, tolerance, ..., .dots) {
 #' variables; use negative values to drop variables. Note: this is the same
 #' behavior as \code{dplyr::select}, in fact the \code{dplyr::select_vars}
 #' function is used here to implement this functionality.
-#' @oaram .dots Use \code{drop_na_cols_()} to do standard evaluation.
+#' @param .dots Use \code{drop_na_cols_()} to do standard evaluation.
 #' @return an object without columns/elements containing too many NAs
 #' @export
 #' @examples
