@@ -55,7 +55,7 @@ list_fill <- function(.data, .fill, ..., .dots, .args, .warning, .p = NULL) {
     
     # Determine which columns to operate on depending on ..., .dots, and .p
     dots <- lazyeval::all_dots(.dots, ...)
-    vars <- dplyr::select_vars_(names(.data), dots)
+    vars <- dplyr::select_vars_(colnames(.data), dots)
     if (!is.null(.p)) {
         valid_cols <- vapply(.data, .p, logical(1))
         vars <- vars[vars %in% valid_cols]
@@ -82,7 +82,7 @@ data_table_fill <- function(.data, .fill, ..., .dots, .args, .warning,
         
         # Determine which columns to operate on depending on ..., .dots, and .p
         dots <- lazyeval::all_dots(.dots, ...)
-        vars <- dplyr::select_vars_(names(.data), dots)
+        vars <- dplyr::select_vars_(colnames(.data), dots)
         if (!is.null(.p)) {
             valid_cols <- vapply(.data, .p, logical(1))
             vars <- vars[vars %in% valid_cols]
@@ -207,7 +207,12 @@ fill_na_.data.frame <- function(.data, .fill, ..., .dots, .args, .warning,
 #' @export
 fill_na_.matrix <- function(.data, .fill, ..., .dots, .args, .warning, 
                             .inplace) {
-    as.matrix(fill_na(as.data.frame(.data), .fill, ..., .dots = .dots,
+    
+    print(.data)
+    print(.fill)
+    print(list(...))
+                                
+    as.matrix(fill_na(as.data.frame(.data), .fill, ..., .dots = .dots, 
                       .args = .args, .warning = .warning, .inplace = .inplace))
 }
 
@@ -300,33 +305,6 @@ fill_na_if_.list <- function(.data, .p, .fill, ..., .dots, .args, .warning,
     .data[vars] <- lapply(.data[vars], fill_na, .fill, .args = .args, 
                           .warning = .warning)
     .data
-}
-
-#' @describeIn fill_na
-#' @export
-fill_na_.data.frame <- function(.data, .fill, ..., .dots, .args, .warning, 
-                                .inplace) {
-    
-    # Loop over the columns, fill in missing values
-    dots <- lazyeval::all_dots(.dots, ...)
-    vars <- dplyr::select_vars_(names(.data), dots)
-    if (length(vars) < 1) {
-        vars <- names(.data)
-    }
-    if (length(vars) == 0) {
-        return(.data)
-    }
-    .data[vars] <- lapply(.data[vars], fill_na, .fill, .args = .args, 
-                          .warning = .warning)
-    .data
-}
-
-#' @describeIn fill_na
-#' @export
-fill_na_.matrix <- function(.data, .fill, ..., .dots, .args, .warning, 
-                            .inplace) {
-    as.matrix(fill_na(as.data.frame(.data), .fill, ..., .dots = .dots,
-                      .args = .args, .warning = .warning, .inplace = .inplace))
 }
 
 ## fill_na_mean/median/mode ===================================================
