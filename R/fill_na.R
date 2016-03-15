@@ -175,17 +175,54 @@ fill_na_ <- function(.data, .fill, ..., .dots, .args = NULL, .warning = TRUE,
 #' @export
 fill_na <- function(.data, .fill, ..., .args = NULL, .warning = TRUE, 
                     .inplace = FALSE) {
+    UseMethod("fill_na")
+}
+
+# For non-vectors: ////////////////////////////////////////////////////////////
+# 
+#' @describeIn fill_na
+#' @export
+fill_na.data.frame <- function(.data, .fill, ..., .args = NULL, 
+                               .warning = TRUE, .inplace = FALSE) {
     fill_na_(.data, .fill, .dots = lazyeval::lazy_dots(...), .args = .args, 
              .warning = .warning, .inplace = .inplace)
 }
 
 #' @describeIn fill_na
 #' @export
-fill_na_.default <- function(.data, .fill, ..., .dots, .args, .warning, 
+fill_na.data.table <- function(.data, .fill, ..., .args = NULL, 
+                               .warning = TRUE, .inplace = FALSE) {
+    fill_na_(.data, .fill, .dots = lazyeval::lazy_dots(...), .args = .args, 
+             .warning = .warning, .inplace = .inplace)
+}
+
+#' @describeIn fill_na
+#' @export
+fill_na.matrix <- function(.data, .fill, ..., .args = NULL, 
+                           .warning = TRUE, .inplace = FALSE) {
+    fill_na_(.data, .fill, .dots = lazyeval::lazy_dots(...), .args = .args, 
+             .warning = .warning, .inplace = .inplace)
+}
+
+#' @describeIn fill_na
+#' @export
+fill_na.list <- function(.data, .fill, ..., .args = NULL, 
+                         .warning = TRUE, .inplace = FALSE) {
+    fill_na_(.data, .fill, .dots = lazyeval::lazy_dots(...), .args = .args, 
+             .warning = .warning, .inplace = .inplace)
+}
+
+# For vectors: ////////////////////////////////////////////////////////////////
+# 
+#' @describeIn fill_na
+#' @export
+fill_na.default <- function(.data, .fill, ..., .dots, .args, .warning, 
                              .inplace) {
     vector_fill(.data, .fill, ..., .dots = .dots, .args = .args, 
                 .warning = .warning)
 }
+
+# Standard-evaluation versions of fill_na /////////////////////////////////////
 
 #' @describeIn fill_na
 #' @export
