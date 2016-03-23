@@ -49,7 +49,8 @@ vector_fill <- function(.data, .fill, ..., .dots, .args, .warning) {
     .data
 }
 
-list_fill <- function(.data, .fill, ..., .dots, .args, .warning, .p = NULL) {
+list_fill <- function(.data, .fill, ..., .dots, .args, .warning, .p = NULL,
+                      .inplace = NULL) {
     
     # Loop over the elements of the list/data.frame, fill in missing values
     
@@ -184,8 +185,9 @@ fill_na <- function(.data, .fill, ..., .args = NULL, .warning = TRUE,
 #' @export
 fill_na.data.frame <- function(.data, .fill, ..., .args = NULL, 
                                .warning = TRUE, .inplace = FALSE) {
-    fill_na_(.data, .fill, .dots = lazyeval::lazy_dots(...), .args = .args, 
-             .warning = .warning, .inplace = .inplace)
+    fill_na_(.data, .fill, ..., 
+             .dots = lazyeval::lazy_dots(...), 
+             .args = .args, .warning = .warning, .inplace = .inplace)
 }
 
 #' @describeIn fill_na
@@ -216,9 +218,9 @@ fill_na.list <- function(.data, .fill, ..., .args = NULL,
 # 
 #' @describeIn fill_na
 #' @export
-fill_na.default <- function(.data, .fill, ..., .dots, .args, .warning, 
-                             .inplace) {
-    vector_fill(.data, .fill, ..., .dots = .dots, .args = .args, 
+fill_na.default <- function(.data, .fill, ..., .args = NULL, 
+                            .warning = TRUE, .inplace = FALSE) {
+    vector_fill(.data, .fill, ..., .dots = NULL, .args = .args, 
                 .warning = .warning)
 }
 
@@ -229,7 +231,7 @@ fill_na.default <- function(.data, .fill, ..., .dots, .args, .warning,
 fill_na_.list <- function(.data, .fill, ..., .dots, .args, .warning, 
                           .inplace) {
     list_fill(.data, .fill, ..., .dots = .dots, .args = .args,
-              .warning = .warning, .inplace = .inplace)
+              .warning = .warning)
 }
 
 #' @describeIn fill_na
@@ -237,7 +239,7 @@ fill_na_.list <- function(.data, .fill, ..., .dots, .args, .warning,
 fill_na_.data.frame <- function(.data, .fill, ..., .dots, .args, .warning, 
                                 .inplace) {
     list_fill(.data, .fill, ..., .dots = .dots, .args = .args,
-              .warning = .warning, .inplace = .inplace)
+              .warning = .warning)
 }
 
 #' @describeIn fill_na

@@ -23,6 +23,12 @@ test_that("fill_na on a vector works with a formula function .fill argument", {
     expect_identical(fill_na(myvec, ~mean(., na.rm = TRUE)), myvec_good)
 })
 
+test_that("fill_na on a vector works with ... as arguments to a function", {
+    myvec <- c(1, 2, NA, NA, 3)
+    myvec_good <- c(1, 2, 2, 2, 3)
+    expect_identical(fill_na(myvec, mean, na.rm = TRUE), myvec_good)
+})
+
 ## data.frame tests -----------------------------------------------------------
 
 test_that("fill_na works on a data.frame w/ column selection", {
