@@ -4,6 +4,13 @@
 ##
 ## ============================================================================
 
+is_atomic <- function(x) {
+    
+    # purrr::is_atomic, is [x] atomic? 
+    typeof(x) %in% c("logical", "integer", "double", "complex", 
+                     "character", "raw")
+}
+
 as_percent <- function(num, total, dig = 1) {
     
     # Returns (num)/(total) as a character percentage

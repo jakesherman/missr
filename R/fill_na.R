@@ -8,7 +8,7 @@
 
 ## Common functions ===========================================================
 
-vector_fill <- function(.data, .fill, ..., .dots, .args, .warning) {
+vector_fill <- function(.data, .fill, ..., .args, .warning) {
     
     # Fill in the NAs of a vector with .fill
     
@@ -176,42 +176,13 @@ fill_na_ <- function(.data, .fill, ..., .dots, .args = NULL, .warning = TRUE,
 #' @export
 fill_na <- function(.data, .fill, ..., .args = NULL, .warning = TRUE, 
                     .inplace = FALSE) {
-    UseMethod("fill_na")
-}
-
-# For non-vectors: ////////////////////////////////////////////////////////////
-# 
-#' @describeIn fill_na
-#' @export
-fill_na.data.frame <- function(.data, .fill, ..., .args = NULL, 
-                               .warning = TRUE, .inplace = FALSE) {
-    fill_na_(.data, .fill, ..., 
-             .dots = lazyeval::lazy_dots(...), 
-             .args = .args, .warning = .warning, .inplace = .inplace)
-}
-
-#' @describeIn fill_na
-#' @export
-fill_na.data.table <- function(.data, .fill, ..., .args = NULL, 
-                               .warning = TRUE, .inplace = FALSE) {
-    fill_na_(.data, .fill, .dots = lazyeval::lazy_dots(...), .args = .args, 
-             .warning = .warning, .inplace = .inplace)
-}
-
-#' @describeIn fill_na
-#' @export
-fill_na.matrix <- function(.data, .fill, ..., .args = NULL, 
-                           .warning = TRUE, .inplace = FALSE) {
-    fill_na_(.data, .fill, .dots = lazyeval::lazy_dots(...), .args = .args, 
-             .warning = .warning, .inplace = .inplace)
-}
-
-#' @describeIn fill_na
-#' @export
-fill_na.list <- function(.data, .fill, ..., .args = NULL, 
-                         .warning = TRUE, .inplace = FALSE) {
-    fill_na_(.data, .fill, .dots = lazyeval::lazy_dots(...), .args = .args, 
-             .warning = .warning, .inplace = .inplace)
+    if (is_atomic(.data)) {
+        vector_fill(.data, .fill, ..., .args = .args, 
+                    .warning = .warning)
+    } else {
+        fill_na_(.data, .fill, ..., .dots = lazyeval::lazy_dots(...),
+                 .args = .args, .warning = .warning, .inplace = .inplace)
+    }
 }
 
 # For vectors: ////////////////////////////////////////////////////////////////
